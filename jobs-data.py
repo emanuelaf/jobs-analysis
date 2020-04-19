@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
+import numpy as np
 
 #print(soup.prettify())
 #type(soup.get_text())
@@ -45,5 +47,43 @@ for url in urls:
             text[i.find_all('h3')[0].get_text()] = i.find_all('p')[0].get_text()
     jobs[soup.title.get_text().split('Job ID:')[1].split('|')[0].strip()].update(text.copy())
 
-jobs
+
+def wordCount(sentence):
+    d = {}
+    sentence = sentence.replace(',', '')
+    sentence = sentence.replace('·', '')
+    for word in sentence.lower().split():
+        if word in d:
+            d[word] += 1
+        else:
+            d[word] = 1
+    return(d)
+
+# there are three things we may be interesting in using to evaluate jobs similarities
+# 1) job description
+# 2) job basic qualifications
+# 3) job preferred qualifications
+
+# let us consider 2)
+
+for jobid in jobs: 
+    jobs[jobid]['BASIC QUALIFICATIONS'] = wordCount(jobs[jobid]['BASIC QUALIFICATIONS']) 
+
+# now for each job, we have a word count of the basic qualifications
+intersect = []
+similarity_matrix = np.zeros(shape=(len(jobs),len(jobs)))
+
+for jobid,j in zip(jobs.keys(),range(0,21)):
+    for jobid2,i in zip(jobs.keys(),range(0,21)):
+        intersect = []
+        for item in jobs[jobid2]['BASIC QUALIFICATIONS'].keys():
+            if item in jobs[jobid]['BASIC QUALIFICATIONS'].keys():
+                intersect.append(item)
+                similarity_matrix[i,j] = len(intersect.copy())
+
+similarity_matrix
+
+#list(jobs['1119430']['BASIC QUALIFICATIONS'].keys())[0] in jobs['1120443']['BASIC QUALIFICATIONS'].keys()
+
+
 
