@@ -74,16 +74,24 @@ intersect = []
 njobs = len(jobs)
 similarity_matrix = np.zeros(shape=(njobs,njobs))
 
-for jobid,j in zip(jobs.keys(),range(0,njobs)):
-    for jobid2,i in zip(jobs.keys(),range(0,njobs)):
+for j,jobid in enumerate(jobs.keys()):
+    for i,jobid2 in enumerate(jobs.keys()):
         intersect = []
-        for item in jobs[jobid2]['BASIC QUALIFICATIONS'].keys():
-            if item in jobs[jobid]['BASIC QUALIFICATIONS'].keys():
+        for item in jobs[jobid2]['BASIC QUALIFICATIONS']:
+            if item in jobs[jobid]['BASIC QUALIFICATIONS']:
                 intersect.append(item)
-                similarity_matrix[i,j] = len(intersect.copy())
+            norm_fact = (len(jobs[jobid2]['BASIC QUALIFICATIONS'])+len(jobs[jobid]['BASIC QUALIFICATIONS']))/2
+            similarity_matrix[i,j] = len(intersect)/norm_fact
 
-similarity_matrix
+np.fill_diagonal(similarity_matrix, 0)
 
-#list(jobs['1119430']['BASIC QUALIFICATIONS'].keys())[0] in jobs['1120443']['BASIC QUALIFICATIONS'].keys()
+import seaborn as sns
+import matplotlib.pyplot as plt
 
+jobName = []
+for jobid in jobs.keys():
+    jobName.append(jobs[jobid]['Job Name'])
 
+similarity = pd.DataFrame(similarity_matrix, index=jobName,columns=jobName)
+sns.heatmap(similarity,cmap='coolwarm',linecolor='white',linewidths=1)
+plt.show()
