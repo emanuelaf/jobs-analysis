@@ -71,10 +71,11 @@ for jobid in jobs:
 
 # now for each job, we have a word count of the basic qualifications
 intersect = []
-similarity_matrix = np.zeros(shape=(len(jobs),len(jobs)))
+njobs = len(jobs)
+similarity_matrix = np.zeros(shape=(njobs,njobs))
 
-for jobid,j in zip(jobs.keys(),range(0,21)):
-    for jobid2,i in zip(jobs.keys(),range(0,21)):
+for jobid,j in zip(jobs.keys(),range(0,njobs)):
+    for jobid2,i in zip(jobs.keys(),range(0,njobs)):
         intersect = []
         for item in jobs[jobid2]['BASIC QUALIFICATIONS'].keys():
             if item in jobs[jobid]['BASIC QUALIFICATIONS'].keys():
@@ -84,6 +85,5 @@ for jobid,j in zip(jobs.keys(),range(0,21)):
 similarity_matrix
 
 #list(jobs['1119430']['BASIC QUALIFICATIONS'].keys())[0] in jobs['1120443']['BASIC QUALIFICATIONS'].keys()
-
 
 
