@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-# print(soup.prettify())
+#print(soup.prettify())
 #type(soup.get_text())
 #soup.find_all('h3')
 #soup.find_all('p')
@@ -38,12 +38,12 @@ for url in urls:
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
     d['Job Name'] = soup.title.get_text().split('- Job ID:')[0]
-    jobs[soup.title.get_text().split('Job ID:')[1].split('|')[0]]= d.copy()
+    jobs[soup.title.get_text().split('Job ID:')[1].split('|')[0].strip()]= d.copy()
     sections = soup.find_all('div',attrs={'class':'section'})
     for i in sections:
         if len(i.find_all('h3')) > 0:
             text[i.find_all('h3')[0].get_text()] = i.find_all('p')[0].get_text()
-    jobs[soup.title.get_text().split('Job ID:')[1].split('|')[0]].update(text.copy())
+    jobs[soup.title.get_text().split('Job ID:')[1].split('|')[0].strip()].update(text.copy())
 
 jobs
 
